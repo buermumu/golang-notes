@@ -107,7 +107,10 @@ VALUE geekbook_post_article_test 0 194
 */
 func (c *Client) parseResponse(r *resource) {
 	for {
-		res, e := r.rw.ReadBytes('\n')
+		res, err := r.rw.ReadBytes('\n')
+		if err != nil {
+			panic(err)
+		}
 		if string(res) == RES_ERROR {
 			fmt.Println("parse error.")
 			break
