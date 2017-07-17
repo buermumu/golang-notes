@@ -3,6 +3,7 @@ package mcq
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	_ "math/rand"
 	"net"
@@ -101,7 +102,8 @@ func (c *Client) Get(addr net.Addr, k string) {
 	if err != nil {
 		panic(err)
 	}
-	c.parseResponse(r)
+	result, err := c.parseResponse(r)
+	fmt.Println(result, err)
 	c.releaseFreeConn(r)
 }
 
