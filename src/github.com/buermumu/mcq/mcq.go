@@ -105,7 +105,7 @@ VALUE geekbook_post_article_test 0 194
 {"uid":"1006299791130764","aid":"20029776248047601","url":"http:\/\/colobu.com\/2017\/06\/27\/Lint-your-golang-code-like-a-mad-man\/?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io"}
 
 */
-func (c *Client) praseResponse(r *resource) {
+func (c *Client) parseResponse(r *resource) {
 	for {
 		res, e := r.rw.ReadBytes('\n')
 		if string(res) == RES_ERROR {
