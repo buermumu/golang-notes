@@ -55,7 +55,7 @@ func (c *Client) dial(addr net.Addr) (*resource, error) {
 	t := time.Now()
 	r := &resource{
 		conn:          conn,
-		rw:            bufio.NewReadWriter(bufio.NewReader(r.conn), bufio.NewWriter(r.conn)),
+		rw:            bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn)),
 		borth_time:    t.UnixNano(),
 		last_use_time: t.UnixNano(),
 	}
