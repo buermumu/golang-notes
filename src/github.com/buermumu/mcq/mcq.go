@@ -2,6 +2,7 @@ package mcq
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	_ "math/rand"
 	"net"
