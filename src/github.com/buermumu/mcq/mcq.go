@@ -3,10 +3,10 @@ package mcq
 import (
 	"bufio"
 	"fmt"
-	"math/rand"
+	_ "math/rand"
 	"net"
 	"sync"
-	"time"
+	_ "time"
 )
 
 var (
@@ -91,7 +91,7 @@ func (c *Client) Get(addr net.Addr, k string) {
 	if err != nil {
 		panic(err)
 	}
-	_, err := fmt.Fprintf(r.rw, "get user_recommend_articles\r\n")
+	_, err = fmt.Fprintf(r.rw, "get user_recommend_articles\r\n")
 	r.rw.Flush()
 	if err != nil {
 		panic(err)
