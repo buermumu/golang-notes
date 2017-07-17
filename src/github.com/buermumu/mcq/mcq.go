@@ -1,7 +1,7 @@
 package mcq
 
 import (
-	"bytes"
+	"bufio"
 	"fmt"
 	"math/rand"
 	"net"
@@ -13,8 +13,14 @@ var (
 	DefaultMaxIdleConns int = 5
 )
 
+const (
+	RES_ERROR string = "ERROR"
+	RES_END   string = "END"
+)
+
 type resource struct {
 	conn net.Conn
+	rw   *bufio.ReadWriter
 }
 
 type Client struct {
@@ -35,6 +41,7 @@ func (c *Client) dial(addr net.Addr) (*resource, error) {
 	r := &resource{
 		conn: conn,
 	}
+	r.rw = bufio.NewReadWriter(bufio.NewReader(r.conn), bufio.NewWriter(r.conn))
 	return r, err
 }
 
@@ -79,23 +86,37 @@ func (c *Client) GetCount() int {
 	return len(c.freeConn)
 }
 
-func (c *Client) Set(addr net.Addr, k string, value string) {
+func (c *Client) Get(addr net.Addr, k string) {
 	r, err := c.getConn(addr)
 	if err != nil {
 		panic(err)
 	}
-	var cmd bytes.Buffer
-	cmd.WriteString(fmt.Sprintf("set %s %s\r\n", k, value))
-	n, err := r.conn.Write(cmd.Bytes())
-	fmt.Println(n, err)
+	_, err := fmt.Fprintf(r.rw, "get user_recommend_articles\r\n")
+	r.rw.Flush()
+	if err != nil {
+		panic(err)
+	}
+	c.parseResponse(r)
+	c.releaseFreeConn(r)
 }
 
-func (c *Client) GetItem(addr net.Addr, i int) {
-	r, err := c.getConn(addr)
-	if err != nil {
-		panic(err)
+/**
+VALUE geekbook_post_article_test 0 194
+{"uid":"1006299791130764","aid":"20029776248047601","url":"http:\/\/colobu.com\/2017\/06\/27\/Lint-your-golang-code-like-a-mad-man\/?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io"}
+
+*/
+func (c *Client) praseResponse(r *resource) {
+	for {
+		res, e := r.rw.ReadBytes('\n')
+		if string(res) == RES_ERROR {
+			fmt.Println("parse error.")
+			break
+		}
+		if string(res) == RES_END {
+			fmt.Println("parse end.")
+			break
+		}
+		fmt.Println(res, string(res))
+		break
 	}
-	num := rand.Intn(10)
-	time.Sleep(time.Duration(num) * time.Second)
-	c.releaseFreeConn(r)
 }
