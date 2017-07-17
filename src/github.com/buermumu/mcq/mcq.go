@@ -10,14 +10,13 @@ import (
 )
 
 var (
-	DefaultMaxIdleConns int = 5
+	DefaultMaxIdleConns int    = 5
+	RESPONSE_ERROR      []byte = []byte("ERROR\r\n")
+	RESPONSE_END        []byte = []byte("END\r\n")
+	RESPONSE_VALUE      []byte = []byte("VALUE")
 )
 
-const (
-	RESPONSE_ERROR []byte = []byte("ERROR\r\n")
-	RESPONSE_END   []byte = []byte("END\r\n")
-	RESPONSE_VALUE []byte = []byte("VALUE")
-)
+const ()
 
 type resource struct {
 	conn net.Conn
