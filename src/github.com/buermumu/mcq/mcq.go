@@ -14,8 +14,9 @@ var (
 )
 
 const (
-	RES_ERROR string = "ERROR"
-	RES_END   string = "END"
+	RESPONSE_ERROR []byte = []byte("ERROR\r\n")
+	RESPONSE_END   []byte = []byte("END\r\n")
+	RESPONSE_VALUE []byte = []byte("VALUE")
 )
 
 type resource struct {
@@ -106,20 +107,23 @@ VALUE geekbook_post_article_test 0 194
 
 */
 func (c *Client) parseResponse(r *resource) {
-	for {
-		res, err := r.rw.ReadBytes('\n')
-		if err != nil {
-			panic(err)
-		}
-		if string(res) == RES_ERROR {
-			fmt.Println("parse error.")
+	s := bufio.NewScanner(r.rw)
+	fmt.Println(s.Text())
+	/*
+		for {
+			result, err := r.rw.ReadBytes('\n')
+			if err != nil {
+				panic(err)
+			}
+			if result == RESPONSE_ERROR {
+				fmt.Println("parse error.")
+				break
+			}
+			if result == RESPONSE_END {
+				fmt.Println("parse end.")
+				break
+			}
 			break
 		}
-		if string(res) == RES_END {
-			fmt.Println("parse end.")
-			break
-		}
-		fmt.Println(res, string(res))
-		break
-	}
+	*/
 }
