@@ -30,8 +30,8 @@ type resource struct {
 	multiplex     int // multiplexing count
 	conn          net.Conn
 	rw            *bufio.ReadWriter
-	borth_time    int // Birthday
-	last_use_time int // last use time
+	borth_time    int64 // Birthday
+	last_use_time int64 // last use time
 	last_cmd      string
 }
 
