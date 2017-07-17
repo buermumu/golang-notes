@@ -107,6 +107,7 @@ VALUE geekbook_post_article_test 0 194
 
 */
 func (c *Client) parseResponse(r *resource) {
+	var buf []byte
 	for {
 		result, err := r.rw.ReadBytes('\n')
 		if err != nil {
@@ -117,12 +118,12 @@ func (c *Client) parseResponse(r *resource) {
 			break
 		}
 		if bytes.Equal(result, RESPONSE_END) {
-			fmt.Println("parse end.")
 			break
 		}
 		if bytes.Equal(result[0:5], RESPONSE_VALUE) {
-			fmt.Println(string(result))
+			continue
 		}
-		break
+		buf = append(buf, result)
 	}
+	fmt.Println(buf, string(buf))
 }
