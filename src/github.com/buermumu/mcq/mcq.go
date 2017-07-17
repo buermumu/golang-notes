@@ -111,15 +111,15 @@ func (c *Client) parseResponse(r *resource) {
 		if err != nil {
 			panic(err)
 		}
-		if result == RESPONSE_ERROR {
+		if bytes.Equal(result, RESPONSE_ERROR) {
 			fmt.Println("parse error.")
 			break
 		}
-		if result == RESPONSE_END {
+		if bytes.Equal(result, RESPONSE_END) {
 			fmt.Println("parse end.")
 			break
 		}
-		if result[0:5] == RESPONSE_VALUE {
+		if bytes.Equal(result[0:5], RESPONSE_VALUE) {
 			fmt.Println(string(result))
 		}
 		break
