@@ -106,23 +106,22 @@ VALUE geekbook_post_article_test 0 194
 
 */
 func (c *Client) parseResponse(r *resource) {
-	s := bufio.NewScanner(r.rw)
-	fmt.Println(s.Text())
-	/*
-		for {
-			result, err := r.rw.ReadBytes('\n')
-			if err != nil {
-				panic(err)
-			}
-			if result == RESPONSE_ERROR {
-				fmt.Println("parse error.")
-				break
-			}
-			if result == RESPONSE_END {
-				fmt.Println("parse end.")
-				break
-			}
+	for {
+		result, err := r.rw.ReadBytes('\n')
+		if err != nil {
+			panic(err)
+		}
+		if result == RESPONSE_ERROR {
+			fmt.Println("parse error.")
 			break
 		}
-	*/
+		if result == RESPONSE_END {
+			fmt.Println("parse end.")
+			break
+		}
+		if result[0:5] == RESPONSE_VALUE {
+			fmt.Println(string(result))
+		}
+		break
+	}
 }
