@@ -11,10 +11,14 @@ import (
 )
 
 var (
+	cmd_error = errors.New("command error.")
+)
+
+var (
 	DefaultMaxIdleConns int    = 5
-	RESPONSE_ERROR      []byte = []byte("ERROR\r\n")
-	RESPONSE_END        []byte = []byte("END\r\n")
-	RESPONSE_VALUE      []byte = []byte("VALUE")
+	delim_error         []byte = []byte("ERROR\r\n")
+	delim_end           []byte = []byte("END\r\n")
+	delim_value         []byte = []byte("VALUE")
 )
 
 const ()
@@ -106,24 +110,23 @@ VALUE geekbook_post_article_test 0 194
 {"uid":"1006299791130764","aid":"20029776248047601","url":"http:\/\/colobu.com\/2017\/06\/27\/Lint-your-golang-code-like-a-mad-man\/?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io"}
 
 */
-func (c *Client) parseResponse(r *resource) {
+func (c *Client) parseResponse(r *resource) ([]byte, error) {
 	var buf []byte
 	for {
 		result, err := r.rw.ReadBytes('\n')
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
-		if bytes.Equal(result, RESPONSE_ERROR) {
-			fmt.Println("parse error.")
+		if bytes.Equal(result, delim_error) {
+			return nil, cmd_error
+		}
+		if bytes.Equal(result, delim_end) {
 			break
 		}
-		if bytes.Equal(result, RESPONSE_END) {
-			break
-		}
-		if bytes.Equal(result[0:5], RESPONSE_VALUE) {
+		if bytes.Equal(result[0:5], delim_value) {
 			continue
 		}
-		buf = append(buf, result)
+		buf = append(buf, result...)
 	}
-	fmt.Println(buf, string(buf))
+	return buf, nil
 }
