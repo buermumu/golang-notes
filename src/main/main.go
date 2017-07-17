@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "app"
-	_ "fmt"
+	"fmt"
 	"github.com/buermumu/mcq"
 	//_ "github.com/go-sql-driver/mysql"
 	"net"
@@ -22,5 +22,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	m.Get(addr, "user_recommend_articles")
+	result, err := m.Get(addr, "user_recommend_articles")
+	fmt.Println(result, err)
 }
