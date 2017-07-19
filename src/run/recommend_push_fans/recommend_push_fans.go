@@ -13,18 +13,31 @@ import (
 )
 
 func main() {
-	process()
+	task_ch := make(chan map[string]string, 20)
+	go func(task_ch chan<- map[string]string) {
+		for {
+			item, err := read()
+			if err != nil {
+				error_log(err)
+				panic(err)
+			}
+			if item == nil {
+				return
+			}
+			task_ch <- item
+		}
+	}(task_ch)
+
+	for {
+		select {
+		case v := <-task_ch:
+			fmt.Println(v)
+		}
+	}
+
 }
 
 func process() {
-	item, err := read()
-	if err != nil {
-		error_log(err)
-		panic(err)
-	}
-	if item == nil {
-		return
-	}
 	handler(item["uid"], item["rid"])
 }
 
@@ -92,6 +105,7 @@ func error_log(err error) {
 	f.WriteString(message)
 	f.WriteString("\n")
 }
+
 func debug_log(message string) {
 	filename := "debug_log"
 	error_log_file := fmt.Sprintf("%s/%s", "./", filename)
