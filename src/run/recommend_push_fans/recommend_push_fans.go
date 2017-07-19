@@ -13,8 +13,9 @@ import (
 )
 
 func main() {
-	task_ch := make(chan map[string]string, 20)
-	go func(task_ch chan<- map[string]string) {
+	task_ch := make([]chan map[string]string, 20)
+	task_dn := make([]chan string, 20)
+	go func(task_ch []chan<- map[string]string) {
 		for {
 			item, err := read()
 			if err != nil {
@@ -30,8 +31,15 @@ func main() {
 
 	for {
 		select {
-		case v := <-task_ch:
-			fmt.Println(v)
+		case value := <-task_ch:
+			go handler(value, task_dn)
+		}
+	}
+
+	for {
+		select {
+		case msg := <-task_dn:
+			fmt.Println(msg)
 		}
 	}
 
@@ -41,7 +49,7 @@ func process() {
 	//handler(item["uid"], item["rid"])
 }
 
-func handler(uid, rid string) {
+func handler(item map[string]string, task_dn []chan<- string) {
 	fans_list, err := getFans(uid)
 	if err != nil {
 		error_log(err)
@@ -51,6 +59,8 @@ func handler(uid, rid string) {
 		last_id := insert(fuid, rid)
 		debug_log(fmt.Sprintf("last_id:%d uid:%s rid:%s", last_id, fuid, rid))
 	}
+	msg := fmt.Sprintf("%s, %s done", item["uid"], item["rid"])
+	task_dn <- msg
 }
 
 func read() (map[string]string, error) {
