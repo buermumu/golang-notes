@@ -15,7 +15,11 @@ unique request id usage
 
 func main() {
 	item, err := read()
-	fmt.Println(item, err)
+	if err != nil {
+		panic(err)
+	}
+	fans_list, err := getFans(item["uid"])
+	fmt.Pirntln(fans_list, err)
 }
 
 func read() (map[string]string, error) {
@@ -37,6 +41,6 @@ func getFans(uid string) ([]interface{}, error) {
 	return list, err
 }
 
-func insert() {
+func insert(uid string, rid string) {
 
 }
