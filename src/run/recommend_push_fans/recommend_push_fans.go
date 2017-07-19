@@ -15,6 +15,7 @@ import (
 func main() {
 	task_list := make(chan map[string]string, 20)
 	for {
+		// read task data write to task_list
 		go func(task_list chan<- map[string]string) {
 			item, err := read()
 			if err != nil {
@@ -26,35 +27,22 @@ func main() {
 			}
 		}(task_list)
 
-		select {
-		case value := <-task_list:
-			go func(value map[string]string) { fmt.Println(value) }(value)
-		}
+		// process task
+		go func(task_list <-chan map[string]string) {
+			select {
+			case value := <-task_list:
+				handler(value, task_done)
+			}
+		}(task_list)
 
+		// task done
+
+		time.Sleep(1 * time.Second)
 	}
 
-	/*
-		for {
-			select {
-			case value := <-task_ch:
-				go handler(value, task_dn)
-			}
-		}
-
-		for {
-			select {
-			case msg := <-task_dn:
-				fmt.Println(msg)
-			}
-		}
-	*/
 }
 
-func process() {
-	//handler(item["uid"], item["rid"])
-}
-
-func handler(item map[string]string, task_dn chan<- string) {
+func handler(item map[string]string) {
 	uid := item["uid"]
 	rid := item["rid"]
 	fans_list, err := getFans(uid)
@@ -67,7 +55,7 @@ func handler(item map[string]string, task_dn chan<- string) {
 		debug_log(fmt.Sprintf("last_id:%d uid:%s rid:%s", last_id, fuid, rid))
 	}
 	msg := fmt.Sprintf("%s, %s done", item["uid"], item["rid"])
-	task_dn <- msg
+	fmt.Println(msg)
 }
 
 func read() (map[string]string, error) {
