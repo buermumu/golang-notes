@@ -81,7 +81,7 @@ func insert(uid string, rid string) int64 {
 }
 
 func error_log(err error) {
-	message := string(err)
+	message := fmt.Sprintf("%s", err)
 	filename := "error.error_log"
 	error_log_file := fmt.Sprintf("%s/%s", "./", filename)
 	f, err := os.OpenFile(error_log_file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
