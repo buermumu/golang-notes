@@ -109,7 +109,7 @@ func (c *Client) Get(addr net.Addr, k string) ([]byte, error) {
 	if err != nil {
 		panic(err)
 	}
-	r.last_cmd = "get user_recommend_articles\r\n"
+	r.last_cmd = fmt.Sprintf("get %s\r\n", k)
 	_, err = fmt.Fprintf(r.rw, r.last_cmd)
 	r.rw.Flush()
 	if err != nil {
