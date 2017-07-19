@@ -50,6 +50,8 @@ func process() {
 }
 
 func handler(item map[string]string, task_dn chan<- string) {
+	uid := item["uid"]
+	rid := item["rid"]
 	fans_list, err := getFans(uid)
 	if err != nil {
 		error_log(err)
