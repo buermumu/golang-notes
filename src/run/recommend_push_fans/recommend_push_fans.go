@@ -13,16 +13,24 @@ import (
 )
 
 func main() {
+	task_list := make(chan map[string]string, 20)
 	for {
 		item, err := read()
 		if err != nil {
 			error_log(err)
 			panic(err)
 		}
-		if item == nil {
-			return
+		if item != nil {
+			task_list <- item
 		}
 		time.Sleep(1 * time.Second)
+	}
+
+	for {
+		select {
+		case value := <-task_list:
+			fmt.Println(value)
+		}
 	}
 
 	/*
