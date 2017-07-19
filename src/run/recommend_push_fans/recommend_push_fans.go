@@ -92,8 +92,7 @@ func error_log(err error) {
 	f.WriteString(message)
 	f.WriteString("\n")
 }
-func debug_log(err error) {
-	message := string(err)
+func debug_log(message string) {
 	filename := "debug_log"
 	error_log_file := fmt.Sprintf("%s/%s", "./", filename)
 	f, err := os.OpenFile(error_log_file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
