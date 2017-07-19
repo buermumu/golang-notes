@@ -24,7 +24,7 @@ func (this *Follower) GetFans(uid string, count int) ([]interface{}, error) {
 	var result map[string]interface{}
 	json.Unmarshal(response, &result)
 	if result["err_code"].(float64) <= 0 {
-		return nil, errors.New(result["err_msg"])
+		return nil, errors.New(fmt.Sprintf("%s"), result["err_msg"])
 	}
 	return result["data"].([]interface{}), nil
 }
