@@ -22,7 +22,7 @@ func main() {
 		return
 	}
 	fans_list, err := getFans(item["uid"])
-	fmt.Pirntln(fans_list, err)
+	fmt.Println(fans_list, err)
 }
 
 func read() (map[string]string, error) {
@@ -38,7 +38,7 @@ func read() (map[string]string, error) {
 	return data, err
 }
 
-func getFans(uid string) ([]interface{}, error) {
+func getFans(uid string) ([]string, error) {
 	f := api.NewFollower()
 	list, err := f.GetFans(uid, 100)
 	return list, err

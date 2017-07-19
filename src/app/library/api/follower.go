@@ -14,7 +14,7 @@ func NewFollower() *Follower {
 	return f
 }
 
-func (this *Follower) GetFans(uid string, count int) ([]interface{}, error) {
+func (this *Follower) GetFans(uid string, count int) ([]string, error) {
 	iclient := New()
 	uri := fmt.Sprintf("%s/follower/fans?uid=%s&count=%d", domain, uid, count)
 	response, err := iclient.Get(uri)
@@ -26,5 +26,9 @@ func (this *Follower) GetFans(uid string, count int) ([]interface{}, error) {
 	if result["err_code"].(float64) <= 0 {
 		return nil, errors.New(fmt.Sprintf("%s", result["err_msg"]))
 	}
-	return result["data"].([]interface{}), nil
+	var uids []string
+	for _, uid := range result["data"].([]interface{}) {
+		uids = append(uids, uid.(string))
+	}
+	return uids, nil
 }

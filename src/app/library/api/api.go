@@ -9,7 +9,7 @@ import (
 
 var (
 	defaultTimeOut time.Duration = 30 * time.Second
-	domain         string        = "http://u.api.geekbook.cc"
+	domain         string        = "http://i.api.geekbook.cc"
 )
 
 type Iclient struct {
