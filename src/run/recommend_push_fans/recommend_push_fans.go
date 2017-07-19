@@ -15,15 +15,16 @@ import (
 func main() {
 	task_list := make(chan map[string]string, 20)
 	for {
-		item, err := read()
-		if err != nil {
-			error_log(err)
-			panic(err)
-		}
-		if item != nil {
-			task_list <- item
-		}
-		time.Sleep(1 * time.Second)
+		go func(task_list chan<- map[string]string) {
+			item, err := read()
+			if err != nil {
+				error_log(err)
+				panic(err)
+			}
+			if item != nil {
+				task_list <- item
+			}
+		}(task_list)
 	}
 
 	for {
