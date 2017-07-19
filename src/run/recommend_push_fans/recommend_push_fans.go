@@ -25,13 +25,12 @@ func main() {
 				task_list <- item
 			}
 		}(task_list)
-	}
 
-	for {
 		select {
 		case value := <-task_list:
-			fmt.Println(value)
+			go func(value map[string]string) { fmt.Println(value) }(value)
 		}
+
 	}
 
 	/*
