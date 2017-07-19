@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 )
 
@@ -15,7 +16,7 @@ func NewFollower() *Follower {
 
 func (this *Follower) GetFans(uid string, count int) ([]interface{}, error) {
 	iclient := New()
-	uri := fmt.Sprintf("%s/follower/fans?uid=%s&count=%d", uid, count)
+	uri := fmt.Sprintf("%s/follower/fans?uid=%s&count=%d", domain, uid, count)
 	response, err := iclient.Get(uri)
 	if err != nil {
 		return nil, err
@@ -23,7 +24,7 @@ func (this *Follower) GetFans(uid string, count int) ([]interface{}, error) {
 	var result map[string]interface{}
 	json.Unmarshal(response, &result)
 	if result["err_code"].(float64) <= 0 {
-		return nil, result["err_msg"].(error)
+		return nil, errors.New(result["err_msg"])
 	}
 	return result["data"].([]interface{}), nil
 }

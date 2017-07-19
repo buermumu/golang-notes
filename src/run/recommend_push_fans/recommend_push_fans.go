@@ -18,6 +18,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	if item == nil {
+		return
+	}
 	fans_list, err := getFans(item["uid"])
 	fmt.Pirntln(fans_list, err)
 }
