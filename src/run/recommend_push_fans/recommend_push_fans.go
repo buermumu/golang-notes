@@ -2,6 +2,7 @@ package main
 
 import (
 	"app/library/api"
+	"encoding/json"
 	"fmt"
 	"github.com/buermumu/mcq"
 	//_ "github.com/go-sql-driver/mysql"
@@ -17,15 +18,17 @@ func main() {
 	fmt.Println(item, err)
 }
 
-func read() ([]byte, error) {
+func read() (map[string]string, error) {
 	dns := "127.0.0.1:11212"
 	mcq, err := mcq.New()
 	addr, err := net.ResolveTCPAddr("tcp", dns)
 	if err != nil {
 		return nil, err
 	}
+	var data map[string]string
 	result, err := mcq.Get(addr, "user_recommend_articles")
-	return result, err
+	json.Unmarshal(result, &data)
+	return data, err
 }
 
 func getFans(uid string) ([]interface{}, error) {
