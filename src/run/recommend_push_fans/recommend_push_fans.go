@@ -36,7 +36,7 @@ func handler(uid, rid string) {
 	}
 	for _, fuid := range fans_list {
 		last_id := insert(fuid, rid)
-		debug_log(fmt.Sprintf("last_id:%s uid:%s rid:%s", last_id, fuid, rid))
+		debug_log(fmt.Sprintf("last_id:%d uid:%s rid:%s", last_id, fuid, rid))
 	}
 }
 
