@@ -13,36 +13,33 @@ import (
 )
 
 func main() {
-	task_ch := make(chan map[string]string, 20)
-	task_dn := make(chan string, 20)
-	go func(task_ch chan<- map[string]string) {
+	for {
+		item, err := read()
+		if err != nil {
+			error_log(err)
+			panic(err)
+		}
+		if item == nil {
+			return
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	/*
 		for {
-			item, err := read()
-			if err != nil {
-				error_log(err)
-				panic(err)
+			select {
+			case value := <-task_ch:
+				go handler(value, task_dn)
 			}
-			if item == nil {
-				return
+		}
+
+		for {
+			select {
+			case msg := <-task_dn:
+				fmt.Println(msg)
 			}
-			task_ch <- item
 		}
-	}(task_ch)
-
-	for {
-		select {
-		case value := <-task_ch:
-			go handler(value, task_dn)
-		}
-	}
-
-	for {
-		select {
-		case msg := <-task_dn:
-			fmt.Println(msg)
-		}
-	}
-
+	*/
 }
 
 func process() {
