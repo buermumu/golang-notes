@@ -31,7 +31,7 @@ func main() {
 		go func(task_list <-chan map[string]string) {
 			select {
 			case value := <-task_list:
-				handler(value, task_done)
+				handler(value)
 			}
 		}(task_list)
 
