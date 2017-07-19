@@ -38,7 +38,7 @@ func main() {
 }
 
 func process() {
-	handler(item["uid"], item["rid"])
+	//handler(item["uid"], item["rid"])
 }
 
 func handler(uid, rid string) {
