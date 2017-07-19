@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	task_ch := make([]chan map[string]string, 20)
-	task_dn := make([]chan string, 20)
-	go func(task_ch []chan<- map[string]string) {
+	task_ch := make(chan map[string]string, 20)
+	task_dn := make(chan string, 20)
+	go func(task_ch chan<- map[string]string) {
 		for {
 			item, err := read()
 			if err != nil {
@@ -49,7 +49,7 @@ func process() {
 	//handler(item["uid"], item["rid"])
 }
 
-func handler(item map[string]string, task_dn []chan<- string) {
+func handler(item map[string]string, task_dn chan<- string) {
 	fans_list, err := getFans(uid)
 	if err != nil {
 		error_log(err)
