@@ -28,12 +28,14 @@ func main() {
 		}
 	}(task_ch)
 
-	for {
-		select {
-		case v := <-task_ch:
-			fmt.Println(v)
+	go func(task_ch chan<- map[string]string) {
+		for {
+			select {
+			case v := <-task_ch:
+				fmt.Println(v)
+			}
 		}
-	}
+	}(task_ch)
 
 }
 
