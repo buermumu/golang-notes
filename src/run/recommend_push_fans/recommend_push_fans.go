@@ -8,12 +8,9 @@ import (
 	"github.com/buermumu/mcq"
 	_ "github.com/go-sql-driver/mysql"
 	"net"
+	"os"
 	"time"
 )
-
-/***
-unique request id usage
-*/
 
 func main() {
 	process()
@@ -22,15 +19,24 @@ func main() {
 func process() {
 	item, err := read()
 	if err != nil {
+		error_log(err)
 		panic(err)
 	}
 	if item == nil {
 		return
 	}
-	fans_list, err := getFans(item["uid"])
-	for _, uid := range fans_list {
-		last_id := insert(uid, item["rid"])
-		fmt.Println("last_id:%s uid:%s rid:%s", last_id, uid, item["rid"])
+	handler(item["uid"], item["rid"])
+}
+
+func handler(uid, rid string) {
+	fans_list, err := getFans(uid)
+	if err != nil {
+		error_log(err)
+		panic(err)
+	}
+	for _, fuid := range fans_list {
+		last_id := insert(fuid, rid)
+		debug_log(fmt.Sprintf("last_id:%s uid:%s rid:%s", last_id, fuid, rid))
 	}
 }
 
@@ -39,7 +45,8 @@ func read() (map[string]string, error) {
 	mcq, err := mcq.New()
 	addr, err := net.ResolveTCPAddr("tcp", dns)
 	if err != nil {
-		return nil, err
+		error_log(err)
+		panic(err)
 	}
 	var data map[string]string
 	result, err := mcq.Get(addr, "user_recommend_articles")
@@ -57,15 +64,43 @@ func insert(uid string, rid string) int64 {
 	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/geekbook?charset=utf8")
 	stmt, err := db.Prepare(`INSERT gk_recommend_feed (rid, uid, create_time) values (? , ?, ?)`)
 	if err != nil {
+		error_log(err)
 		panic(err)
 	}
 	res, err := stmt.Exec(uid, rid, time.Now().Unix())
 	if err != nil {
+		error_log(err)
 		panic(err)
 	}
 	id, err := res.LastInsertId()
 	if err != nil {
+		error_log(err)
 		panic(err)
 	}
 	return id
+}
+
+func error_log(err error) {
+	message := string(err)
+	filename := "error.error_log"
+	error_log_file := fmt.Sprintf("%s/%s", "./", filename)
+	f, err := os.OpenFile(error_log_file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	f.WriteString(message)
+	f.WriteString("\n")
+}
+func debug_log(err error) {
+	message := string(err)
+	filename := "debug_log"
+	error_log_file := fmt.Sprintf("%s/%s", "./", filename)
+	f, err := os.OpenFile(error_log_file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	f.WriteString(message)
+	f.WriteString("\n")
 }
