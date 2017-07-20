@@ -85,7 +85,7 @@ func insert(uid string, rid string) int64 {
 		error_log(err)
 		panic(err)
 	}
-	res, err := stmt.Exec(uid, rid, time.Now().Unix())
+	res, err := stmt.Exec(rid, uid, time.Now().Unix())
 	if err != nil {
 		error_log(err)
 		panic(err)
