@@ -14,9 +14,10 @@ import (
 
 func main() {
 	task_list := make(chan map[string]string, 20)
-	for {
-		// read task data write to task_list
-		go func(task_list chan<- map[string]string) {
+
+	// read task data write to task_list
+	go func(task_list chan<- map[string]string) {
+		for {
 			item, err := read()
 			if err != nil {
 				error_log(err)
@@ -25,8 +26,11 @@ func main() {
 			if item != nil {
 				task_list <- item
 			}
-		}(task_list)
+			time.Sleep(500 * time.Millisecond)
+		}
+	}(task_list)
 
+	for {
 		// process task
 		go func(task_list <-chan map[string]string) {
 			select {
@@ -34,10 +38,6 @@ func main() {
 				handler(value)
 			}
 		}(task_list)
-
-		// task done
-
-		time.Sleep(500 * time.Millisecond)
 	}
 
 }
