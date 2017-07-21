@@ -15,10 +15,11 @@ import (
 func main() {
 	task_list := make(chan map[string]string, 20)
 
+	mclient := mcq.New()
 	// read task data write to task_list
-	go func(task_list chan<- map[string]string) {
+	go func(task_list chan<- map[string]string, mclient *mcq.Client) {
 		for {
-			item, err := read()
+			item, err := read(mclient)
 			if err != nil {
 				error_log(err)
 				panic(err)
@@ -28,7 +29,7 @@ func main() {
 			}
 			time.Sleep(500 * time.Millisecond)
 		}
-	}(task_list)
+	}(task_list, mclient)
 
 	for {
 		// process task
@@ -58,9 +59,8 @@ func handler(item map[string]string) {
 	fmt.Println(msg)
 }
 
-func read() (map[string]string, error) {
+func read(clent *mcq.Client) (map[string]string, error) {
 	dns := "127.0.0.1:11212"
-	mcq, err := mcq.New()
 	addr, err := net.ResolveTCPAddr("tcp", dns)
 	if err != nil {
 		error_log(err)
