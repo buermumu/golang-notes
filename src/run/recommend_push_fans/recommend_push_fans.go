@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	// read task data write to task_list
 	go func(task_list chan<- map[string]string, mclient *mcq.Client) {
 		for {
@@ -45,6 +46,7 @@ func main() {
 				case value := <-task_list:
 					handler(value)
 				}
+				time.Sleep(500 * time.Millisecond)
 			}
 		}(task_list)
 	}
