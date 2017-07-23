@@ -69,7 +69,7 @@ func handler(item map[string]string) {
 	fmt.Println(msg)
 }
 
-func read(clent *mcq.Client) (map[string]string, error) {
+func read(client *mcq.Client) (map[string]string, error) {
 	dns := "127.0.0.1:11212"
 	addr, err := net.ResolveTCPAddr("tcp", dns)
 	if err != nil {
@@ -77,7 +77,7 @@ func read(clent *mcq.Client) (map[string]string, error) {
 		panic(err)
 	}
 	var data map[string]string
-	result, err := mcq.Get(addr, "user_recommend_articles")
+	result, err := client.Get(addr, "user_recommend_articles")
 	json.Unmarshal(result, &data)
 	return data, err
 }
