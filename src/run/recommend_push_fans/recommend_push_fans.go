@@ -37,7 +37,7 @@ func main() {
 	}(task_list, mclient)
 
 	// Bug : 这里起来N多协程， 系统被拖死， 改为只起10个， 然后每个协程中for{}获取，得到就处理
-	for i = 0; i < task_worker; i++ {
+	for i := 0; i < task_worker; i++ {
 		// process task
 		go func(task_list <-chan map[string]string) {
 			for {
