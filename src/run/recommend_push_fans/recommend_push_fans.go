@@ -13,7 +13,9 @@ import (
 )
 
 func main() {
-	task_list := make(chan map[string]string, 20)
+	var task_worker = 20
+	task_list := make(chan map[string]string, task_worker)
+	waiting := make(chan int)
 
 	mclient := mcq.New()
 	// read task data write to task_list
@@ -31,16 +33,21 @@ func main() {
 		}
 	}(task_list, mclient)
 
-	for {
+	// Bug : 这里起来N多协程， 系统被拖死， 改为只起10个， 然后每个协程中for{}获取，得到就处理
+	for i = 0; i < task_worker; i++ {
 		// process task
 		go func(task_list <-chan map[string]string) {
-			select {
-			case value := <-task_list:
-				handler(value)
+			for {
+				select {
+				case value := <-task_list:
+					handler(value)
+				}
 			}
 		}(task_list)
 	}
 
+	// 阻塞
+	<-waiting
 }
 
 func handler(item map[string]string) {
