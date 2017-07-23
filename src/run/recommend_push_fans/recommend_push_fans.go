@@ -17,7 +17,10 @@ func main() {
 	task_list := make(chan map[string]string, task_worker)
 	waiting := make(chan int)
 
-	mclient := mcq.New()
+	mclient, err := mcq.New()
+	if err != nil {
+		panic(err)
+	}
 	// read task data write to task_list
 	go func(task_list chan<- map[string]string, mclient *mcq.Client) {
 		for {
