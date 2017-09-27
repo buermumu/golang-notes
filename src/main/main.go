@@ -2,8 +2,8 @@ package main
 
 import (
 	_ "app"
-	"app/library/api"
-	"fmt"
+	_ "app/library/api"
+	ft "fmt"
 	_ "github.com/buermumu/mcq"
 	//_ "github.com/go-sql-driver/mysql"
 	_ "net"
@@ -17,10 +17,7 @@ func main() {
 	//var c chan int
 	//c = make(chan int, 10)
 
-	fmt.Println("test")
-	f := api.NewFollower()
-	list, _ := f.GetFans()
-	fmt.Println(list)
+	ft.Println("test")
 	/*
 		return nil
 		dns := "127.0.0.1:11212"
