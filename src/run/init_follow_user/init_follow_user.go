@@ -64,7 +64,9 @@ func read(client *mcq.Client) ([]byte, error) {
 }
 
 func handler(uid string) {
-	api_recommend := api.NewRecommend()
-	api_recommend.InitUserFollow(uid)
+	if len(uid) > 0 {
+		api_recommend := api.NewRecommend()
+		api_recommend.InitUserFollow(uid)
+	}
 
 }
