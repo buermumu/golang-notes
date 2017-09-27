@@ -1,7 +1,8 @@
 package main
 
 import (
-	_ "app/library/api"
+	"app/library/api"
+	"bytes"
 	_ "database/sql"
 	_ "encoding/json"
 	"fmt"
@@ -37,14 +38,16 @@ func main() {
 	for i := 0; i < task_work; i++ {
 		go func(task_list <-chan string) {
 			for {
-				uid := <-task_list
-				if len(uid) > 0 {
-					api_recommend := api.NewRecommend()
-					api_recommend.InitUserFollow(uid)
+				select {
+				case uid := <-task_list:
+					handler(uid)
 				}
+				time.Sleep(500 * time.Millisecond)
 			}
 		}(task_list)
 	}
+
+	fmt.Println("end")
 
 	<-waiting
 }
@@ -56,6 +59,12 @@ func read(client *mcq.Client) ([]byte, error) {
 		panic(err)
 	}
 	uid, err := client.Get(addr, "new_register_user")
-	uid = []byte{49, 48, 48, 51, 55, 54, 54, 51, 56, 49, 50, 56, 56, 48, 55, 48, 51, 13, 10}
-	return uid, err
+	last_uid := bytes.TrimRight(uid, "\r\n")
+	return last_uid, err
+}
+
+func handler(uid string) {
+	api_recommend := api.NewRecommend()
+	api_recommend.InitUserFollow(uid)
+
 }

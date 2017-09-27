@@ -4,6 +4,7 @@ import (
 	_ "encoding/json"
 	_ "errors"
 	"fmt"
+	_ "reflect"
 )
 
 type Recommend struct {
@@ -17,5 +18,8 @@ func (this *Recommend) InitUserFollow(uid string) {
 	url := fmt.Sprintf("%s/recommend/userinit?uid=%s", domain, uid)
 	iclient := New()
 	response, err := iclient.Get(url)
-	fmt.Println(response, err)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(url, "ok")
 }
