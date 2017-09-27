@@ -21,5 +21,5 @@ func (this *Recommend) InitUserFollow(uid string) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(url, "ok")
+	fmt.Println(url, string(response))
 }
