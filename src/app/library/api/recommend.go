@@ -13,8 +13,8 @@ func NewRecommend() *Recommend {
 	return &Recommend{}
 }
 
-func (this *Recommend) InitUserFollow(uid int) {
-	url := ""
+func (this *Recommend) InitUserFollow(uid string) {
+	url := fmt.Sprintf("%s/recommend/userinit?uid=%s", domain, uid)
 	iclient := New()
 	response, err := iclient.Get(url)
 	fmt.Println(response, err)
