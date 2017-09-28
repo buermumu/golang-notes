@@ -9,7 +9,7 @@ import (
 	"github.com/buermumu/mcq"
 	_ "github.com/go-sql-driver/mysql"
 	"net"
-	_ "os"
+	"os"
 	"time"
 )
 
