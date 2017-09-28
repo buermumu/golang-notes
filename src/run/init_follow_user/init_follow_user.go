@@ -88,6 +88,6 @@ func debug_log(message string) {
 		panic(err)
 	}
 	defer f.Close()
-	f.WriteString(message)
+	f.WriteString(fmt.Sprintf("%s %s", time.Now().String(), message))
 	f.WriteString("\n")
 }
