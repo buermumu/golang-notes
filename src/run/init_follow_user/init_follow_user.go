@@ -21,16 +21,20 @@ func main() {
 	task_work := 10
 	waiting := make(chan int)
 	task_list := make(chan string, task_work)
+	error_log("begin")
 
 	// read
 	go func(task_list chan<- string, mclient *mcq.Client) {
 		for {
+			error_log("process read a")
 			uid, err := read(mclient)
 			if err != nil {
+				error_log("process read error")
 				panic(err)
 			}
 			task_list <- string(uid)
 			time.Sleep(500 * time.Millisecond)
+			error_log("process read b")
 		}
 	}(task_list, mclient)
 
@@ -38,11 +42,13 @@ func main() {
 	for i := 0; i < task_work; i++ {
 		go func(task_list <-chan string) {
 			for {
+				error_log("process handler a")
 				select {
 				case uid := <-task_list:
 					handler(uid)
 				}
 				time.Sleep(500 * time.Millisecond)
+				error_log("process handler b")
 			}
 		}(task_list)
 	}
@@ -53,6 +59,7 @@ func main() {
 }
 
 func read(client *mcq.Client) ([]byte, error) {
+	error_log("read func a")
 	dns := "127.0.0.1:11212"
 	addr, err := net.ResolveTCPAddr("tcp", dns)
 	if err != nil {
@@ -60,13 +67,27 @@ func read(client *mcq.Client) ([]byte, error) {
 	}
 	uid, err := client.Get(addr, "new_register_user")
 	last_uid := bytes.TrimRight(uid, "\r\n")
+	error_log("read func b")
 	return last_uid, err
 }
 
 func handler(uid string) {
 	if len(uid) > 0 {
+		error_log("handler func a")
 		api_recommend := api.NewRecommend()
 		api_recommend.InitUserFollow(uid)
+		error_log("handler func b")
 	}
+}
 
+func debug_log(message string) {
+	filename := "x_log"
+	error_log_file := fmt.Sprintf("%s/%s", "./", filename)
+	f, err := os.OpenFile(error_log_file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	f.WriteString(message)
+	f.WriteString("\n")
 }

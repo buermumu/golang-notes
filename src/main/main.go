@@ -7,6 +7,7 @@ import (
 	_ "github.com/buermumu/mcq"
 	//_ "github.com/go-sql-driver/mysql"
 	_ "net"
+	"runtime/debug"
 )
 
 /***
@@ -18,6 +19,7 @@ func main() {
 	//c = make(chan int, 10)
 
 	ft.Println("test")
+	debug.PrintStack()
 	/*
 		return nil
 		dns := "127.0.0.1:11212"
